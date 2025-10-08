@@ -1,0 +1,47 @@
+<div class="container mt-4">
+  <h3>Add New Client</h3>
+  <form [formGroup]="clientForm" (ngSubmit)="addClient()" class="mb-4">
+    <div class="mb-3">
+      <label for="clientName" class="form-label">Client Name</label>
+      <input
+        type="text"
+        id="clientName"
+        class="form-control"
+        formControlName="clientName"
+      />
+    </div>
+    <button class="btn btn-primary" type="submit" [disabled]="clientForm.invalid">
+      Add Client
+    </button>
+  </form>
+
+  <h3>Client List</h3>
+  <table class="table table-striped mt-3">
+    <thead>
+      <tr>
+        <th>ID</th>
+        <th>Client Name</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let client of clients">
+        <td>{{ client.id }}</td>
+        <td>{{ client.clientName }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="mb-3">
+  <label for="clientId" class="form-label">Client ID</label>
+  <input type="number" id="clientId" class="form-control" [(ngModel)]="clientId" />
+</div>
+
+<button class="btn btn-info mb-3" (click)="getClientById()">Fetch Client</button>
+
+<div *ngIf="selectedClient" class="mt-3">
+  <h5>Client Details:</h5>
+  <p><strong>ID:</strong> {{ selectedClient.id }}</p>
+  <p><strong>Name:</strong> {{ selectedClient.clientName }}</p>
+</div>
+
