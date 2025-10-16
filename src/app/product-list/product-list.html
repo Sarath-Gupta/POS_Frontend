@@ -1,13 +1,49 @@
 <div class="container mt-4">
-  <div class="d-flex justify-content-between align-items-center mb-3">
-    <h3>Product List</h3>
-    <button class="btn btn-primary" (click)="openAddModal()">
-      <i class="bi bi-plus-lg"></i> Add Product
-    </button>
-  </div>
 
+  <!-- Main Card for Product Management -->
   <div class="card shadow-sm">
     <div class="card-body">
+      <!-- Card Header: Title and Add Button -->
+      <div class="d-flex justify-content-between align-items-center mb-3">
+        <h3 class="mb-0">Product List</h3>
+        <button class="btn btn-primary" (click)="openAddModal()">
+          Add Product
+        </button>
+      </div>
+
+      <!-- Filter and Upload Controls (Unchanged) -->
+      <div class="row align-items-end border-top pt-3 mb-3">
+        <div class="col-md-5">
+          <label for="searchTerm" class="form-label">Search by Name or Barcode</label>
+          <input
+            type="text"
+            id="searchTerm"
+            class="form-control"
+            placeholder="Enter search term..."
+            [(ngModel)]="searchTerm"
+            (input)="applyFilters()"
+          />
+        </div>
+        <div class="col-md-4">
+          <label for="searchClientId" class="form-label">Filter by Client ID</label>
+          <input
+            type="number"
+            id="searchClientId"
+            class="form-control"
+            placeholder="Enter Client ID..."
+            [(ngModel)]="searchClientId"
+            (input)="applyFilters()"
+          />
+        </div>
+        <div class="col-md-3 text-end">
+          <button class="btn btn-outline-secondary w-100" (click)="fileInput.click()">
+             Upload TSV
+          </button>
+          <input type="file" class="d-none" #fileInput (change)="onFileSelected($event)" accept=".tsv">
+        </div>
+      </div>
+
+      <!-- Product List Table -->
       <div class="table-responsive">
         <table class="table table-striped table-hover">
           <thead class="table-dark">
@@ -18,10 +54,12 @@
               <th>Barcode</th>
               <th>Client ID</th>
               <th>MRP</th>
+              <!-- ## NEW: Actions column ## -->
+              <th class="text-end">Actions</th>
             </tr>
           </thead>
           <tbody>
-            <tr *ngFor="let product of products">
+            <tr *ngFor="let product of filteredProducts">
               <td>{{ product.id }}</td>
               <td>
                 <img *ngIf="product.imgUrl" [src]="product.imgUrl" alt="{{ product.name }}" class="rounded" width="50" height="50" style="object-fit: cover" />
@@ -30,23 +68,45 @@
               <td>{{ product.barcode }}</td>
               <td>{{ product.clientId }}</td>
               <td>{{ product.mrp | currency:'INR' }}</td>
+              <!-- ## NEW: Edit button ## -->
+              <td class="text-end">
+                <button class="btn btn-sm btn-secondary" (click)="openEditModal(product)">Edit</button>
+              </td>
             </tr>
           </tbody>
         </table>
       </div>
+
+      <!-- Pagination Controls (Unchanged) -->
+      <nav *ngIf="totalPages > 1" class="d-flex justify-content-end mt-3">
+        <ul class="pagination">
+          <li class="page-item" [class.disabled]="currentPage === 0">
+            <a class="page-link" href="javascript:void(0)" (click)="onPageChange(currentPage - 1)">Previous</a>
+          </li>
+          <li class="page-item" *ngFor="let page of [].constructor(totalPages); let i = index" [class.active]="i === currentPage">
+            <a class="page-link" href="javascript:void(0)" (click)="onPageChange(i)">{{ i + 1 }}</a>
+          </li>
+          <li class="page-item" [class.disabled]="currentPage === totalPages - 1">
+            <a class="page-link" href="javascript:void(0)" (click)="onPageChange(currentPage + 1)">Next</a>
+          </li>
+        </ul>
+      </nav>
     </div>
   </div>
 </div>
 
+<!-- ## Add/Edit Product Modal ## -->
 <div class="modal fade" #productModal tabindex="-1">
   <div class="modal-dialog">
     <div class="modal-content">
       <div class="modal-header">
-        <h5 class="modal-title">Add New Product</h5>
+        <!-- ## NEW: Dynamic modal title ## -->
+        <h5 class="modal-title">{{ isEditMode ? 'Edit Product' : 'Add New Product' }}</h5>
         <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
       </div>
       <div class="modal-body">
-        <form [formGroup]="productForm" (ngSubmit)="addProduct()">
+        <!-- ## MODIFIED: ngSubmit now calls saveProduct() ## -->
+        <form [formGroup]="productForm" (ngSubmit)="saveProduct()">
           <div class="mb-3">
             <label for="name" class="form-label">Product Name</label>
             <input type="text" id="name" class="form-control" formControlName="name" />
@@ -67,7 +127,6 @@
             <label for="imgUrl" class="form-label">Image URL</label>
             <input type="text" id="imgUrl" class="form-control" formControlName="imgUrl" />
           </div>
-
           <div class="modal-footer border-0">
             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
             <button type="submit" class="btn btn-primary" [disabled]="productForm.invalid">Save Product</button>
@@ -77,3 +136,4 @@
     </div>
   </div>
 </div>
+

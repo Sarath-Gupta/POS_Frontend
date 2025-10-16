@@ -1,31 +1,35 @@
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { environment } from '../../environments/environments';
 import { Observable } from 'rxjs';
 import { Product } from '../models/products';
+import { PaginatedResponse } from '../models/paginatedResponse';
 
-@Injectable({
-  providedIn: 'root'
-})
+@Injectable({ providedIn: 'root' })
 export class ProductService {
   private baseUrl = `${environment.apiUrl}/products`;
 
-    constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {}
+
+  getAll(page: number, size: number): Observable<PaginatedResponse<Product>> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+    return this.http.get<PaginatedResponse<Product>>(this.baseUrl, { params });
+  }
   
-    getAll(): Observable<Product[]> {
-      return this.http.get<Product[]>(this.baseUrl);
-    }
-    
-    getById(id: number): Observable<Product> {
-      return this.http.get<Product>(`${this.baseUrl}/${id}`);
-    }
-  
-    add(client: Product): Observable<Product> {
-      return this.http.post<Product>(this.baseUrl, client);
-    }
-  
-    update(id: number, client: Product): Observable<Product> {
-      return this.http.put<Product>(`${this.baseUrl}/${id}`, client);
-    }
-  
+  add(product: Product): Observable<Product> {
+    return this.http.post<Product>(this.baseUrl, product);
+  }
+
+  update(id: number, product: Product): Observable<Product> {
+    return this.http.put<Product>(`${this.baseUrl}/${id}`, product);
+  }
+
+  uploadTsv(file: File): Observable<any> {
+    const formData = new FormData();
+    formData.append('file', file, file.name);
+    return this.http.post(`${this.baseUrl}/file`, formData);
+  }
 }
+
