@@ -2,8 +2,8 @@ import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule, FormBuilder, FormGroup, Validators, FormsModule } from '@angular/forms';
-import { ClientService } from '../../services/client';
-import { Client } from '../../models/client';
+import { ClientService } from '../services/client';
+import { Client } from '../models/client';
 
 @Component({
   selector: 'app-client-list',

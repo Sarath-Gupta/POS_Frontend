@@ -4,5 +4,5 @@ export interface Product {
     clientId: number
     imgUrl: String
     mrp: number
-    productName: String
+    name: String
 }
