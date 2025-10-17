@@ -93,7 +93,20 @@ export class ProductListComponent implements OnInit {
   }
   
   onFileSelected(event: any): void {
-    // ... (logic remains the same)
+    const file: File = event.target.files[0];
+    if (!file) return;
+
+    // Call the service to upload the file
+    this.productService.uploadTsv(file).subscribe({
+      next: () => {
+        this.notificationService.showSuccess('Client TSV file uploaded successfully!');
+        this.loadProducts(); // Refresh the list to show new clients
+      },
+      error: (err) => this.notificationService.showError(err, 'File Upload Failed'),
+    });
+    
+    // Reset the file input so the user can upload the same file again if needed
+    event.target.value = '';
   }
 
   /**
