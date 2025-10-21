@@ -105,26 +105,18 @@ export class ProductListComponent implements OnInit {
       error: (err) => this.notificationService.showError(err, 'File Upload Failed'),
     });
     
-    // Reset the file input so the user can upload the same file again if needed
     event.target.value = '';
   }
 
-  /**
-   * ### MODIFIED: Now enables barcode and clientId fields for adding.
-   */
   openAddModal(): void {
     this.isEditMode = false;
     this.selectedProduct = null;
     this.productForm.reset();
-    // Ensure controls are enabled for adding a new product
     this.productForm.get('barcode')?.enable();
     this.productForm.get('clientId')?.enable();
     this.productModal.show();
   }
 
-  /**
-   * ### MODIFIED: Now disables barcode and clientId fields for editing.
-   */
   openEditModal(product: Product): void {
     this.isEditMode = true;
     this.selectedProduct = product;
@@ -135,7 +127,7 @@ export class ProductListComponent implements OnInit {
       mrp: product.mrp,
       imgUrl: product.imgUrl || ''
     });
-    // Disable controls that should not be editable
+    
     this.productForm.get('barcode')?.disable();
     this.productForm.get('clientId')?.disable();
     this.productModal.show();

@@ -1,13 +1,14 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet} from '@angular/router';
-import { NavbarComponent } from './navbar/navbar';
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [NavbarComponent, RouterOutlet],
+  standalone: true,
+  imports: [RouterOutlet], // <-- Remove NavbarComponent from here
   templateUrl: './app.html',
-  styleUrl: './app.css'
+  styleUrls: ['./app.css']
 })
-export class App {
-  protected readonly title = signal('frontend');
+export class AppComponent {
+  // This component no longer needs any specific logic.
+  // The 'title' signal can be removed if not used.
 }

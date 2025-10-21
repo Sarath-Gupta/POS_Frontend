@@ -1,0 +1,24 @@
+<div class="auth-container">
+  <div class="card shadow-sm">
+    <div class="card-body">
+      <h3 class="card-title text-center mb-4">Login to PoS</h3>
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+        <div class="mb-3">
+          <label for="email" class="form-label">Email address</label>
+          <input type="email" id="email" class="form-control" formControlName="email" placeholder="Enter your email">
+        </div>
+        <div class="mb-3">
+          <label for="password" class="form-label">Password</label>
+          <input type="password" id="password" class="form-control" formControlName="password" placeholder="Enter your password">
+        </div>
+        <div class="d-grid">
+          <button class="btn btn-primary" type="submit" [disabled]="loginForm.invalid">Login</button>
+        </div>
+      </form>
+      <div class="text-center mt-3">
+        <span>Don't have an account? </span>
+        <a routerLink="/auth/signup">Sign up here</a>
+      </div>
+    </div>
+  </div>
+</div>
